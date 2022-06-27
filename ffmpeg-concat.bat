@@ -1,0 +1,1 @@
+ffmpeg -i "E:\Filmy\Asa akira\Asa-Akira-Intros\Asa-Intro5.mp4" -i "E:\Filmy\Asa akira\Asa-Akira-Intros\Asa-Intro13.mp4" -i "E:\Filmy\Asa akira\Asa-Akira-Intros\Asa-Intro11.mp4" -filter_complex "[2]scale=1920:1080[v2],[0][1][v2]concat=n=3" out.mp4
