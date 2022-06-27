@@ -18,7 +18,7 @@ files = [
 "E:\Filmy\InTheCrack\InTheCrack 1702 Demi Sutra-66098.mp4"
 ]
 
-#music = "E:\Filmy\Generator\Auto_PMV_Generator\Resources\TempMusic\Music Compilation Video - Sally.mp4"
+# music = "E:\Filmy\Generator\Auto_PMV_Generator\Resources\TempMusic\Music Compilation Video - Sally.mp4"
 music = "E:\Filmy\Generator\Auto_PMV_Generator\Resources\TempMusic\\'Bass Slut' Teen Fucking PMV.mp4"
 
 
@@ -28,7 +28,7 @@ compresion_preset = "fast"
 #fast, medium, slow, FOR GPU
 #ultrafast, superfast, veryfast, faster, fast, medium, slow, slower, veryslow FOR CPU
 
-output_file = "out-myFFTBase-var.mp4"
+output_file = "out-myFFTBass-alt-var-filt.mp4"
 
 res_comm = resolution.replace('x',':')
 vid_parts = []
@@ -53,9 +53,9 @@ def init():
 	shutil.rmtree("./tmp")
 	os.makedirs("./tmp")
 	
-	#reshaped_data, first_data, audioclip, ratio, bitrate, songStart, songEnd, selectedDiffsIndex
-	Ap = AudioProcessor(music, 1.6, useFFT=False, buffSizeInSec=4, sampleSize= 1024, debug=True)
-	# Ap = AudioProcessor(music,5, useFFT=True,useLowPassFilter=False, buffSizeInSec=1.5, sampleSize=1024,FFTSubbands=32, debug=True)
+	# Ap = AudioProcessor(music, 1.6, useAutoConst=True, useFFT=False, buffSizeInSec=4, sampleSize= 1024, debug=True)
+	# Ap = AudioProcessor(music,5,useAutoConst=True, useFFT=True,useLowPassFilter=True, minLengthInSec=0.2 ,buffSizeInSec=0.6, sampleSize=1024,FFTSubbands=32,filterFuncPrams=(2,1), debug=True)
+	Ap = AudioProcessor(music,minLengthInSec=0.2, buffSizeInSec=0.8,debug=True)
 	musicData = Ap.processAudio()
 
 def get_vid_parts(crf, preset):
