@@ -48,6 +48,7 @@ class AudioProcessor:
     _sampleSize = 1024
     _fs = 48000
     _minLengthInSec = 0.1
+    _silenceThreshold = 10e8
     _bufferSizeInSamples = 48000
     _avgEnergySq = []
     _avgVarEnergy = []
@@ -73,7 +74,7 @@ class AudioProcessor:
     _pltsC = []
     _pltsAvgVar = []
 
-    def __init__(self,fileName, C = 1.6, useAutoConst = True ,useFFT = True, useLowPassFilter = True ,buffSizeInSec = 1, minLengthInSec = 0.1,
+    def __init__(self,fileName, C = 1.6, useAutoConst = True ,useFFT = True, useLowPassFilter = True ,buffSizeInSec = 1, minLengthInSec = 0.1, silenceTreshold = 10e8,
                 sampleSize = 1024, FFTSubbands = 32, filterFuncPrams = (2,1), debug=False, showPlots = False):
 
         self._debug = debug
@@ -97,6 +98,7 @@ class AudioProcessor:
         self._useLowPassFilter = useLowPassFilter
         self._useAutoCFromVar = useAutoConst
         self._minLengthInSec = minLengthInSec
+        self._silenceThreshold = silenceTreshold
         self._sampleSize = sampleSize
         self._a = filterFuncPrams[0]
         self._b = filterFuncPrams[1]
@@ -113,6 +115,7 @@ class AudioProcessor:
         printi(f"Sample size: {self._sampleSize}")
         printi(f"Buffer size in sampls: {self._bufferSizeInSamples}")
         printi(f"Min Length of clip in Secends: {minLengthInSec}")
+        printi(f"Silence threshold: {self._silenceThreshold}")
         printi(f'Use FFT: {self._useFFT}')
         printi(f'Use LowPassFilter: {self._useLowPassFilter}')
         printi(f'Use Auto Const from Var: {self._useAutoCFromVar}')
@@ -228,8 +231,7 @@ class AudioProcessor:
             #     varMax = np.max(self._FFTSubbandsAvgVar,axis=0)
             #     printi(f"varMax: {varMax}, varMin: {np.min(self._FFTSubbandsAvgVar)}")
             #     self._FFTSubbandsAvgVar = self._FFTSubbandsAvgVar/varMax * 200
-
-            printi(f"Average Variance in Energy: {self._FFTSubbandsAvgVar.shape}, time: {time.time()-t}")
+            # printi(f"Average Variance in Energy: {self._FFTSubbandsAvgVar.shape}, time: {time.time()-t}")
 
         if self._showPlots:
             for i in range(self._FFTSubbands):
@@ -243,13 +245,12 @@ class AudioProcessor:
         i - is the middle index of avgEnergy (len(buf)//2)
         assumes i is in range
         '''
-        threshold = 10e8
         C = self._C
         if self._useAutoCFromVar:
             C = (-0.0025714*4 * self._FFTSubbandsAvgVar[i]) + 1.5142857*4
         vals = self._FFTSubbandsData[i + self._bufferSizeInSamples//2] * self.filter()
         out = np.any((vals > C * self._FFTSubbandsAvgBuffs[i])
-             & (self._FFTSubbandsAvgBuffs[i] > threshold))
+             & (self._FFTSubbandsAvgBuffs[i] > self._silenceThreshold))
         if self._showPlots:
             for k,band in enumerate( self._FFTSubbandsData[i + self._bufferSizeInSamples//2]):
                 if self._useAutoCFromVar:
@@ -345,10 +346,11 @@ def progres_bar(progress, total):
 
 if __name__ == "__main__":
     #musicFile = "E:\Filmy\Generator\Auto_PMV_Generator\Resources\TempMusic\Music Compilation Video - Sally.mp4"
-    musicFile = "E:\Filmy\Generator\Auto_PMV_Generator\Resources\TempMusic\\'Bass Slut' Teen Fucking PMV.mp4"
+    #musicFile = "E:\Filmy\Generator\Auto_PMV_Generator\Resources\TempMusic\\'Bass Slut' Teen Fucking PMV.mp4"
+    #musicFile = "E:\Filmy\Generator\Auto_PMV_Generator\Resources\TempMusic\Insane 1 Hour Nightcore Compilation  -D.mp4"
     #musicFile = "tests.wav"
     # ap = AudioProcessor(musicFile, 1.3, useAutoConst=False, useFFT=False, buffSizeInSec=0.8, sampleSize= 1024, debug=True,showPlots=False)
-    ap = AudioProcessor(musicFile,10,useAutoConst=False, useFFT=True,useLowPassFilter=True,minLengthInSec=0.15, buffSizeInSec=0.8, sampleSize=1024,FFTSubbands=32,filterFuncPrams=(2,1), debug=True,showPlots=False)
+    ap = AudioProcessor(musicFile,10,useAutoConst=True, useFFT=True,useLowPassFilter=True,minLengthInSec=0.15, buffSizeInSec=0.8, sampleSize=1024,FFTSubbands=32,filterFuncPrams=(2,1), debug=True,showPlots=False)
     #ap = AudioProcessor(musicFile,minLengthInSec=0.2, buffSizeInSec=0.8,debug=True)
     '''
     (a,b) 2,1 dla 1024 i 32

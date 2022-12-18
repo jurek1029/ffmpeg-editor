@@ -1,0 +1,4 @@
+[0]trim=0:10,setpts=PTS-STARTPTS[v0];^
+ [0]trim=10:20,setpts=PTS-STARTPTS[v1];^
+ [0]trim=20:30,setpts=PTS-STARTPTS[v2];^
+ [0]trim=30:40,setpts=PTS-STARTPTS[v3];

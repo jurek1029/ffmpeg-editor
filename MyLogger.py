@@ -1,7 +1,8 @@
 #error,warning,info
 DebugLeves = {0:"Error",
 1:"Warning",
-2:"Info"}
+2:"Info",
+3:"Verbose"}
 DEBUG_LEVEL = 2
 
 def setLevel(lvl):
@@ -18,8 +19,13 @@ def printw(s):
 def printi(s):
     if DEBUG_LEVEL >= 2: 
         print(f'\33[4m\33[49m\33[92m[{DebugLeves[2]}] {s}\33[0m\33[49m\33[39m')
+    
+def printv(s):
+    if DEBUG_LEVEL >= 3: 
+        print(f'[{DebugLeves[3]}] {s}')
 
 if __name__ == "__main__":
     printi("test")
     printw("test")
     printe("test")
+    printv('test')
